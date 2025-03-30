@@ -1,0 +1,72 @@
+import { wordScore } from "./wordscore";
+
+export const levelParams = [
+  {
+    name: "Beginner",
+    tiles: 9,
+    minimumLength: 4,
+    minVowels: 1,
+    maxVowels: 6,
+    scoreToBeat: 240,
+    slotFuncs: [
+      { name: "Anything", f: (w) => w.length >= 4 },
+      { name: "4 letters", f: (w) => w.length === 4 },
+      { name: "5 letters", f: (w) => w.length === 5 },
+      { name: "6+ letters", f: (w) => w.length >= 6 },
+      { name: "20 pointer", f: (w) => wordScore(w) >= 20 },
+      { name: "30 pointer", f: (w) => wordScore(w) >= 30 },
+      { name: "40 pointer", f: (w) => wordScore(w) >= 40 },
+    ],
+    perfect: {
+      icon: "🎇",
+      name: "Seven stars",
+      desc: "A perfect board on the Beginner level",
+      rarity: "ultra rare",
+    },
+  },
+  {
+    name: "Intermediate",
+    tiles: 12,
+    minimumLength: 5,
+    minVowels: 2,
+    maxVowels: 8,
+    scoreToBeat: 380,
+    slotFuncs: [
+      { name: "Anything", f: (w) => w.length >= 5 },
+      { name: "6 letters", f: (w) => w.length === 6 },
+      { name: "7 letters", f: (w) => w.length === 7 },
+      { name: "8+ letters", f: (w) => w.length >= 8 },
+      { name: "35 pointer", f: (w) => wordScore(w) >= 35 },
+      { name: "45 pointer", f: (w) => wordScore(w) >= 45 },
+      { name: "55 pointer", f: (w) => wordScore(w) >= 55 },
+    ],
+    perfect: {
+      icon: "🧑‍🎓",
+      name: "Mastery",
+      desc: "A perfect board on the Intermediate level",
+      rarity: "ultra rare",
+    },
+  },
+  {
+    name: "Expert",
+    tiles: 15,
+    minimumLength: 6,
+    minVowels: 3,
+    maxVowels: 9,
+    slotFuncs: [
+      { name: "Anything", f: (w) => w.length >= 6 },
+      { name: "7 letters", f: (w) => w.length === 7 },
+      { name: "8 letters", f: (w) => w.length === 8 },
+      { name: "9+ letters", f: (w) => w.length >= 9 },
+      { name: "60 pointer", f: (w) => wordScore(w) >= 60 },
+      { name: "75 pointer", f: (w) => wordScore(w) >= 75 },
+      { name: "90 pointer", f: (w) => wordScore(w) >= 90 },
+    ],
+    perfect: {
+      icon: "🦄",
+      name: "Perfection",
+      desc: "Congratulations! This is the ultimate achievement. Thank you for playing qword.",
+      rarity: "ultra rare",
+    },
+  },
+];

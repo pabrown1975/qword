@@ -182,7 +182,7 @@ const Main = ({}) => {
   const tileAreaHeight = bottomAreaHeight - (playedWordAreaHeight + messageAreaHeight);
 
   const tileSizeAvail = Math.min((tileAreaHeight - 20) / 3, (screenArea.viewWidth - 20) / 5, 60);
-  const tileSizePlayed = Math.min(screenArea.viewWidth / playedLetters.length, 36);
+  const tileSizePlayed = Math.min(screenArea.viewWidth / playedLetters.length, tileSizeAvail * 0.8);
 
   // The literals here are a best guess at layout slop (borders + padding) but might be off on some devices
   const availableLettersRackWidth = tileSizeAvail * 5 + 11;
@@ -272,6 +272,7 @@ const Main = ({}) => {
         <H1>
           qword{!!score && ` ː ${score} pts`}
           {roundBingos[round] && <Text size={5}>⭐️</Text>}
+          {!roundBests[round] && <Text size={5}>☠️</Text>}
         </H1>
         <Text>{gameSeed}</Text>
       </View>
@@ -322,24 +323,26 @@ const Main = ({}) => {
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
+                backgroundColor: theme.bg1,
+                borderRadius: 6,
               }}
             >
-              {playedLetters.length ? (
-                playedLetters.map((l, i) => (
-                  <Tile
-                    key={`played tile ${i}`}
-                    letter={l}
-                    onPress={() => handlePlayedTileClick(i)}
-                    onDrag={({ x, y }) => handlePlayedTileDrag(i, x, y)}
-                    size={tileSizePlayed}
-                    noscore
-                  />
-                ))
-              ) : (
-                <View style={{ backgroundColor: theme.bg1, padding: 10, borderRadius: 7 }}>
-                  <Text size={13} style={{ color: theme.bg3 }}>Tap or drag tiles to make a word here</Text>
-                </View>
-              )}
+              {playedLetters.length
+                ? playedLetters.map((l, i) => (
+                    <Tile
+                      key={`played tile ${i}`}
+                      letter={l}
+                      onPress={() => handlePlayedTileClick(i)}
+                      onDrag={({ x, y }) => handlePlayedTileDrag(i, x, y)}
+                      size={tileSizePlayed}
+                      noscore
+                    />
+                  ))
+                : !round && (
+                    <Text size={13} style={{ color: theme.bg3 }}>
+                      Tap or drag tiles to make a word here
+                    </Text>
+                  )}
             </View>
             <View
               style={{

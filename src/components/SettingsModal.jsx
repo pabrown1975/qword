@@ -32,7 +32,7 @@ const YesNoDialog = ({ title, buttonText, confirmText, onYes }) => {
   );
 };
 
-const SettingsModal = ({ visible, setVisible, onNewGame }) => {
+const SettingsModal = ({ visible, setVisible, onQuit }) => {
   return (
     <Modal visible={visible} setVisible={setVisible}>
       <H2>Settings</H2>
@@ -43,7 +43,7 @@ const SettingsModal = ({ visible, setVisible, onNewGame }) => {
           confirmText="Are you sure? You will lose your current game progress."
           onYes={() => {
             setVisible(false);
-            onNewGame();
+            onQuit();
           }}
         />
         <YesNoDialog

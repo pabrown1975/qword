@@ -8,10 +8,10 @@ const Modal = ({ visible, setVisible, children }) => {
         style={{
           justifyContent: "center",
           alignItems: "center",
+          gap: 10,
           width: "100%",
           height: "100%",
           backgroundColor: "rgba(0, 0, 0, 0.8)",
-          gap: 10,
         }}
       >
         {children}

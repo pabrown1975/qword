@@ -430,7 +430,7 @@ const Main = ({}) => {
       <SettingsModal
         visible={settingsModalVisible}
         setVisible={setSettingsModalVisible}
-        onNewGame={() => newGame("Daily")}
+        onQuit={() => setGameOver(true)}
       />
     </View>
   );

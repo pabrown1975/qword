@@ -1,9 +1,9 @@
 import { vowelTable, consonantTable } from "./constants";
 import { random, randomInt } from "./math";
 import { shuffleArray } from "./arrays";
-import wordlist from './wordlist';
 import { bestWord, wordScore } from './wordscore';
 import { levelParams } from './levels';
+import wordlist from './wordlist';
 
 const randomLetter = (fromTable, seed) => {
   const r = random(seed);
@@ -35,7 +35,7 @@ export const rollLetters = (numLetters, seed, round, minVowels, maxVowels) => {
 };
 
 export const buildRacks = (mode, level, date) => {
-  const seedRoot = mode === "Daily" ? date.toDateString() : (Math.random() * 10).toString().replace(".", "");
+  const seedRoot = mode === "Daily" ? date.toDateString() : Math.floor(date.getTime() / 1000);
   const seed = `${mode} : ${seedRoot} : ${level}`;
   const index = levelParams.findIndex((lp) => lp.name === level)
   const data = levelParams[index];

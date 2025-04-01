@@ -10,6 +10,8 @@ export const theme = {
   bg3: "#765",
   accent1: "#396",
   accent2: "#6c8",
+  ghost1: "rgba(51, 153, 102, 0.1)",
+  ghost2: "rgba(102, 204, 136, 0.3)",
 };
 
 export const slotHeight = 32;

@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
-import { H2, H3 } from "./Text";
-import { forceHeight } from "../utils/style";
-import { theme } from "../utils/style";
+import { H2 } from "./Text";
+import { forceHeight, theme } from '../utils/style';
 import { gameAchievements, roundAchievements } from "../utils/achievements";
 import Button from "./Button";
 import Win from "./Win";
@@ -74,6 +73,7 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
 
   return (
     <View style={{ width: "100%", ...forceHeight(height) }}>
+
       <View
         style={{
           width: "100%",
@@ -94,7 +94,6 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
             borderRadius: 6,
           }}
         >
-          <H3>Achievements ({roundWins.length + gameWins.length}):</H3>
           {roundWins.map((rw) => (
             <Win {...rw} key={rw.name} />
           ))}

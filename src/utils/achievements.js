@@ -36,7 +36,7 @@ export const roundAchievements = [
     icon: "🤯",
     name: `Bingo-${lp.tiles}!`,
     desc: `Use all ${lp.tiles} letters in a rack on the ${lp.name} level`,
-    rarity: lp.tiles > 12 ? "ultra rare" : lp.tiles > 9 ? "rare" : null,
+    rarity: lp.tiles > 9 ? "very rare" : null,
     f: ({ word, rack, level }) => word?.word?.length === rack.length && level === lp.name,
     bonus: 50,
   })),
@@ -70,10 +70,10 @@ export const gameAchievements = [
   },
   {
     icon: "🏴‍☠️",
-    name: "900 points",
-    desc: "Inconceivable! I do not think that word means what you think it means",
+    name: "1000 points",
+    desc: "Inconceivable! (I do not think that word means what you think it means)",
     rarity: "ultra rare",
-    f: ({ score }) => score >= 900,
+    f: ({ score }) => score >= 1000,
   },
   {
     icon: "⭐️",

@@ -11,6 +11,15 @@ const YesterdayModal = ({ visible, setVisible }) => {
   const d = new Date();
   d.setDate(d.getDate() - 1);
 
+  // BUG:
+  // This calculation takes a long time and can break the parent's state if it happens during a game
+  //
+  // FIX (maybe):
+  // - move "new Date" inside the memo
+  // - remove dependency
+  // - pass in "gameOver" and use that as a dependency
+  //   - only do the update if gameOver is true
+  //   - would probably have to do useState + useEffect instead of useMemo
   const data = useMemo(
     () =>
       levelParams.map((lp) => ({

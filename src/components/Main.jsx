@@ -20,6 +20,7 @@ import HelpModal from "./HelpModal";
 import YesterdayModal from "./YesterdayModal";
 import SettingsModal from "./SettingsModal";
 
+
 const Main = ({}) => {
   const [loading, setLoading] = useState(true);
   const [gameSeed, setGameSeed] = useState("");
@@ -163,20 +164,6 @@ const Main = ({}) => {
     );
   }
 
-  /*
-  ----------  ----------
-  title
-  ----------  ----------
-  slots
-  ----------  ----------
-  playedWord
-  ----------  bottom
-  tiles       (also
-  ----------  gameOver)
-  message
-  ----------  ----------
-  */
-
   const titleAreaHeight = 80;
   const slotAreaHeight = (levelData.slotFuncs.length + 1) * slotHeight + levelData.slotFuncs.length * 3;
   const bottomAreaHeight = screenArea.viewHeight - (titleAreaHeight + slotAreaHeight);
@@ -185,7 +172,7 @@ const Main = ({}) => {
   const tileAreaHeight = bottomAreaHeight - (playedWordAreaHeight + messageAreaHeight);
 
   const tileSizeAvail = Math.min((tileAreaHeight - 20) / 3, (screenArea.viewWidth - 20) / 5, 60);
-  const tileSizePlayed = Math.min(screenArea.viewWidth / (playedLetters.length + 1), tileSizeAvail * 0.8);
+  const tileSizePlayed = Math.min((screenArea.viewWidth - 20) / playedLetters.length, 50);
 
   // The literals here are a best guess at layout slop (borders + padding) but might be off on some devices
   const availableLettersRackWidth = tileSizeAvail * 5 + 8;
@@ -218,87 +205,75 @@ const Main = ({}) => {
     });
   };
 
-  /*
-    [x] from avail, to played - tile edges are left by 0.5
-    [x] from avail, to played - can't add at right end
-    [x] from avail, to played, add at right end - ghost is wrong
-    [ ] from avail, to avail, same row - shift everything between to and from by 1
-    [ ] from avail, to avail, different row - shift everything to left by -0.5, shift everything to right by 0.5
-    [ ] from played, to avail - same as "different row" above
-    [ ] from played, to avail - can't add at right end
-    [ ] from played, to avail - can't add to next row if num avail tiles is a multiple of 5
-    [ ] from played, to avail - empty avail case
-    [x] from avail, to played - empty played case
-   */
-
   const handleTileDrag = (event) => {
-    const toPlayed = event.absoluteY < layoutInfo["availTileArea"].y - 20;
+    setDragInfo((prev) => {
+      const toPlayed = event.absoluteY < layoutInfo["availTileArea"].y - 20;
+      const { fromPlayed } = prev;
+      let { toIndex } = prev;
 
-    let toIndex;
-
-    if (toPlayed) {
-      if (!playedLetters.length || !layoutInfo[`played tile 0`] || event.absoluteX <= layoutInfo[`played tile 0`].x) {
-        toIndex = 0;
-      } else {
-        if (dragInfo.fromPlayed) {
-          if (event.absoluteX >= layoutInfo[`played tile ${playedLetters.length - 1}`]?.x) {
-            toIndex = playedLetters.length - 1;
-          } else {
-            toIndex = playedLetters.findIndex((_, i) => layoutInfo[`played tile ${i}`].x > event.absoluteX) - 1;
-          }
+      if (toPlayed) {
+        if (!playedLetters.length || !layoutInfo[`played tile 0`] || event.absoluteX <= layoutInfo[`played tile 0`].x) {
+          toIndex = 0;
         } else {
-          if (event.absoluteX >= layoutInfo[`played tile ${playedLetters.length - 1}`]?.x + tileSizePlayed) {
-            toIndex = playedLetters.length;
-          } else {
-            toIndex = playedLetters.findLastIndex(
-              (_, i) => layoutInfo[`played tile ${i}`].x - tileSizePlayed / 2 < event.absoluteX
-            );
-          }
-        }
-      }
-    } else {
-      let toRow;
-      let toCol;
-
-      if (!availableLetters.length || !layoutInfo[`avail tile 0`]) {
-        toRow = 0;
-        toCol = 0;
-      } else {
-        if (event.absoluteY <= layoutInfo[`avail tile 0`].y) {
-          toRow = 0;
-        } else {
-          if (dragInfo.fromPlayed) {
-            if (event.absoluteY >= layoutInfo[`avail tile ${availableLetters.length - 1}`]?.y) {
-              toRow = Math.floor(availableLetters.length / 5);
+          if (fromPlayed) {
+            if (event.absoluteX >= layoutInfo[`played tile ${playedLetters.length - 1}`]?.x) {
+              toIndex = playedLetters.length - 1;
             } else {
-              toRow = availableLetters.findIndex((_, i) => layoutInfo[`avail tile ${i}`].y > event.absoluteY) / 5 - 1;
+              toIndex = playedLetters.findIndex((_, i) => layoutInfo[`played tile ${i}`].x > event.absoluteX) - 1;
             }
-          } else {
+          } else if (fromPlayed === false) {
+            if (event.absoluteX >= layoutInfo[`played tile ${playedLetters.length - 1}`]?.x + tileSizePlayed) {
+              toIndex = playedLetters.length;
+            } else {
+              toIndex = playedLetters.findLastIndex(
+                (_, i) => layoutInfo[`played tile ${i}`].x - tileSizePlayed / 2 < event.absoluteX
+              );
+            }
           }
         }
+      } else {
+        let toRow;
+        let toCol;
+        const lastSlot = availableLetters.length - (fromPlayed ? 0 : 1);
 
-        if (event.absoluteX <= layoutInfo[`avail tile 0`].x) {
+        if (!availableLetters.length || !layoutInfo[`avail tile 0`]) {
+          toRow = 0;
           toCol = 0;
         } else {
-          if (dragInfo.fromPlayed) {
-            if (event.absoluteX >= layoutInfo[`avail tile ${Math.min(availableLetters.length - 1, 4)}`]?.x) {
-              toCol = 4;
-            } else {
-              toCol = availableLetters.findIndex((_, i) => layoutInfo[`avail tile ${i}`].x > event.absoluteX) - 1;
-            }
+          if (event.absoluteY <= layoutInfo[`avail tile 0`].y) {
+            toRow = 0;
           } else {
+            toRow = clamp(
+              Math.trunc(
+                (availableLetters.findLastIndex(
+                  (_, i) => layoutInfo[`avail tile ${i}`].y + tileSizeAvail < event.absoluteY
+                ) +
+                  1) /
+                  5
+              ),
+              0,
+              Math.floor(lastSlot / 5)
+            );
+          }
+
+          if (event.absoluteX <= layoutInfo["avail tile 0"].x) {
+            toCol = 0;
+          } else {
+            toCol = availableLetters
+              .slice(0, 5)
+              .findLastIndex((_, i) => layoutInfo[`avail tile ${i}`].x < event.absoluteX);
           }
         }
+
+        toIndex = clamp(toRow * 5 + toCol, 0, lastSlot);
       }
 
-      toIndex = clamp(toRow * 5 + toCol, 0, availableLetters.length - (dragInfo.fromPlayed ? 0 : 1));
-    }
-
-    setDragInfo((prev) => ({
-      ...prev,
-      toIndex,
-      toPlayed,
-    }));
+      return {
+        ...prev,
+        toIndex,
+        toPlayed,
+      };
+    });
   };
 
   const handleTileDragEnd = () => {
@@ -448,18 +423,17 @@ const Main = ({}) => {
 
       y = toArea.y + (toArea.h - s) / 2;
     } else {
-      const numRows = Math.ceil(availableLetters.length / 5);
+      const numRows = Math.ceil(l / 5);
       const toRow = Math.floor(dragInfo.toIndex / 5);
       const toCol = dragInfo.toIndex % 5;
 
-      // if (dragInfo.fromPlayed) {
-      // }
-      // else {
-      // }
-
       x = screenArea.width / 2 + ((toArea.w - 3) * (toCol - 2)) / 5 - s / 2 - 2;
 
-      y = toArea.y + ((toArea.h - 1) * (toRow + 1 / 2)) / numRows - s / 2;
+      if (l) {
+        y = toArea.y + ((toArea.h - 1) * (toRow + 1 / 2)) / numRows - s / 2;
+      } else {
+        y = toArea.y;
+      }
     }
 
     ghostTileStyle = {
@@ -476,11 +450,12 @@ const Main = ({}) => {
   return (
     <View
       style={{
+        ...forceWidth(screenArea.width),
+        ...forceHeight(screenArea.height),
         ...screenArea.padding,
         justifyContent: "flex-start",
         alignItems: "center",
         backgroundColor: theme.bg0,
-        maxHeight: "100%",
       }}
     >
       <View
@@ -556,7 +531,7 @@ const Main = ({}) => {
               <View
                 style={{
                   width: "100%",
-                  ...forceHeight(tileSizePlayed * 1.5),
+                  ...forceHeight(tileSizePlayed + 20),
                   flexDirection: "row",
                   backgroundColor: theme.bg1,
                   borderRadius: 6,
@@ -637,33 +612,37 @@ const Main = ({}) => {
                 >
                   {availableLetters.map((l, i) => {
                     const key = `avail tile ${i}`;
+                    let xyShift = {};
 
-                    if (!dragInfo.toPlayed) {
-                      const toCol = dragInfo.toIndex % 5;
-                      const toRow = Math.floor(dragInfo.toIndex / 5);
+                    // the "=== false" is needed because the case where the user is dragging means that both
+                    // toPlayed and fromPlayed are "=== undefined"
+                    if (dragInfo.toPlayed === false) {
+                      const shiftRight = {
+                        transform: [
+                          { translateX: (i % 5 === 4 ? -4 : 1) * (tileSizeAvail + 1) },
+                          { translateY: (i % 5 === 4 ? 1 : 0) * (tileSizeAvail + 1) },
+                        ],
+                      };
+
+                      const shiftLeft = {
+                        transform: [
+                          { translateX: (i % 5 === 0 ? 4 : -1) * (tileSizeAvail + 1) },
+                          { translateY: (i % 5 === 0 ? -1 : 0) * (tileSizeAvail + 1) },
+                        ],
+                      };
 
                       if (dragInfo.fromPlayed) {
-                        /*
-                        STOPPED HERE
-
-                        [x] bingo 12 and bingo 15 --> very rare
-                        [ ] multi-page help, mention yesterday button, mention level score to beat
-                        [x] 900 --> 1000
-                        [ ] sort achievements (in grid and in list)
-                        [x] remove "Achievements (#):"
-                        [ ] confetti for full achievement board
-                        [ ] finish drag
-                          case 3...
-                          - shift right if row === toRow and col >= toCol
-                          do case 4
-                         */
-                      } else {
-                        const fromCol = dragInfo.fromIndex % 5;
-                        const fromRow = Math.floor(dragInfo.fromIndex / 5);
+                        if (i >= dragInfo.toIndex) {
+                          xyShift = shiftRight;
+                        }
+                      } else if (dragInfo.fromPlayed === false) {
+                        if (i >= dragInfo.toIndex && i < dragInfo.fromIndex) {
+                          xyShift = shiftRight;
+                        } else if (i > dragInfo.fromIndex && i <= dragInfo.toIndex) {
+                          xyShift = shiftLeft;
+                        }
                       }
                     }
-
-                    let xShift = {};
 
                     return (
                       <Tile
@@ -675,7 +654,7 @@ const Main = ({}) => {
                         onDragEnd={handleTileDragEnd}
                         size={tileSizeAvail}
                         onLayout={(event) => updateLayoutPos(key, event.target)}
-                        style={xShift}
+                        style={xyShift}
                       />
                     );
                   })}

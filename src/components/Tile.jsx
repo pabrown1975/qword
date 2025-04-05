@@ -6,19 +6,17 @@ import { styles, theme } from "../utils/style";
 import Text from "./Text";
 
 const Tile = ({ letter, onPress, onDragStart, onDrag, onDragEnd, size, noscore, style, ...props }) => {
-  const [dragPoint, setDragPoint] = useState({});
   const [dragInfo, setDragInfo] = useState(null);
 
   const centered = (event) => ({
     ...event,
-    absoluteX: size / 2 + event.absoluteX - dragPoint.x,
-    absoluteY: size / 2 + event.absoluteY - dragPoint.y,
+    absoluteX: size / 2 + event.absoluteX - event.x,
+    absoluteY: size / 2 + event.absoluteY - event.y,
   });
 
   const pan = Gesture.Pan()
     .onStart((event) => {
       setDragInfo({ ...event });
-      setDragPoint({ x: event.x, y: event.y });
       onDragStart?.(centered(event));
     })
     .onUpdate((event) => {
@@ -28,7 +26,6 @@ const Tile = ({ letter, onPress, onDragStart, onDrag, onDragEnd, size, noscore, 
     .onEnd((event) => {
       onDragEnd?.(centered(event));
       setDragInfo(null);
-      setDragPoint({});
     })
     .runOnJS(true);
 
@@ -64,7 +61,7 @@ const Tile = ({ letter, onPress, onDragStart, onDrag, onDragEnd, size, noscore, 
         {...props}
       >
         <Text size={size * 0.7} style={{ bottom: Math.pow(size, 0.1) }}>
-          {letter.toUpperCase()}
+          {letter?.toUpperCase()}
           {!noscore && <Text size={size * 0.3}>{letterPoints[letter]}</Text>}
         </Text>
       </View>

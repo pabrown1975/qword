@@ -209,7 +209,7 @@ const Main = ({}) => {
     setDragInfo((prev) => {
       const toPlayed = event.absoluteY < layoutInfo["availTileArea"].y - 20;
       const { fromPlayed } = prev;
-      let { toIndex } = prev;
+      let toIndex;
 
       if (toPlayed) {
         if (!playedLetters.length || !layoutInfo[`played tile 0`] || event.absoluteX <= layoutInfo[`played tile 0`].x) {
@@ -221,8 +221,8 @@ const Main = ({}) => {
             } else {
               toIndex = playedLetters.findIndex((_, i) => layoutInfo[`played tile ${i}`].x > event.absoluteX) - 1;
             }
-          } else if (fromPlayed === false) {
-            if (event.absoluteX >= layoutInfo[`played tile ${playedLetters.length - 1}`]?.x + tileSizePlayed) {
+          } else {
+            if (event.absoluteX >= layoutInfo[`played tile ${playedLetters.length - 1}`]?.x + tileSizePlayed / 2) {
               toIndex = playedLetters.length;
             } else {
               toIndex = playedLetters.findLastIndex(
@@ -261,7 +261,7 @@ const Main = ({}) => {
           } else {
             toCol = availableLetters
               .slice(0, 5)
-              .findLastIndex((_, i) => layoutInfo[`avail tile ${i}`].x < event.absoluteX);
+              .findLastIndex((_, i) => layoutInfo[`avail tile ${i}`].x + tileSizeAvail < event.absoluteX) + 1;
           }
         }
 

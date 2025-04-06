@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { H2 } from "./Text";
-import { forceHeight, theme } from '../utils/style';
+import { forceHeight, theme } from "../utils/style";
 import { gameAchievements, roundAchievements } from "../utils/achievements";
 import Button from "./Button";
 import Win from "./Win";
@@ -33,6 +33,10 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
 
   const gameWins = gameAchievements.filter((ga) => ga.f({ words, racks, bests, level, score, roundWins }));
 
+  const wins = [...roundWins, ...gameWins];
+
+  wins.sort((a, b) => a.sortOrder - b.sortOrder);
+
   useEffect(() => {
     let all = [];
 
@@ -40,7 +44,7 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
       .then((data) => {
         const saved = JSON.parse(data ?? "[]");
 
-        all = [...new Set([...saved, ...roundWins.map((rw) => rw.name), ...gameWins.map((gw) => gw.name)])];
+        all = [...new Set([...saved, ...wins.map((w) => w.name)])];
 
         return AsyncStorage.setItem("achievements", JSON.stringify(all));
       })
@@ -73,7 +77,6 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
 
   return (
     <View style={{ width: "100%", ...forceHeight(height) }}>
-
       <View
         style={{
           width: "100%",
@@ -84,7 +87,7 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
       >
         <H2>Final score: {score} pts</H2>
       </View>
-      {roundWins.length + gameWins.length > 0 && (
+      {!!wins.length && (
         <ScrollView
           style={{
             ...forceHeight(achievementAreaHeight),
@@ -94,10 +97,7 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
             borderRadius: 6,
           }}
         >
-          {roundWins.map((rw) => (
-            <Win {...rw} key={rw.name} />
-          ))}
-          {gameWins.map((gw) => (
+          {wins.map((gw) => (
             <Win {...gw} key={gw.name} />
           ))}
         </ScrollView>
@@ -130,7 +130,7 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
       <AchievementsModal
         visible={showAchievementsModal}
         setVisible={setShowAchievementsModal}
-        achievementList={[...roundAchievements, ...gameAchievements]}
+        achievementList={[...roundAchievements, ...gameAchievements].sort((a, b) => a.sortOrder - b.sortOrder)}
         completedAchievements={completedAchievements}
       />
     </View>

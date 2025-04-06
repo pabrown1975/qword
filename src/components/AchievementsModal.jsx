@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { TouchableOpacity, View } from "react-native";
-import { forceHeight, forceWidth, useScreenArea } from '../utils/style';
+import { View } from "react-native";
+import { forceHeight, forceWidth, useScreenArea } from "../utils/style";
 import { styles, theme } from "../utils/style";
 import Text from "./Text";
 import Win from "./Win";
 import Modal from "./Modal";
+import TileButton from "./TileButton";
 
 const AchievementsModal = ({ visible, setVisible, achievementList, completedAchievements }) => {
   const { viewWidth } = useScreenArea();
@@ -16,7 +17,7 @@ const AchievementsModal = ({ visible, setVisible, achievementList, completedAchi
     ) : (
       <>
         <Text>???</Text>
-        {!!selectedAchievement.rarity && <Text style={{ color: theme.accent2}}>({selectedAchievement.rarity})</Text>}
+        {!!selectedAchievement.rarity && <Text style={{ color: theme.accent2 }}>({selectedAchievement.rarity})</Text>}
       </>
     )
   ) : null;
@@ -44,22 +45,33 @@ const AchievementsModal = ({ visible, setVisible, achievementList, completedAchi
           paddingVertical: 5,
         }}
       >
-        {achievementList.map((a) => (
-          <TouchableOpacity
-            onPress={() => setSelected(a.name)}
-            key={a.name}
-            style={{
-              ...styles.tile,
-              width: tileSize,
-              height: tileSize,
-              borderColor: selected === a.name ? theme.accent2 : theme.fg2,
-            }}
-          >
-            <Text size={tileSize * 0.7} style={{ color: theme.bg2 }}>
-              {completedAchievements.indexOf(a.name) >= 0 ? a.icon : "?"}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        {achievementList.map((a) => {
+          const highlightStyle =
+            a.name === selected
+              ? {
+                  borderColor: theme.accent2,
+                  transform: [{ scale: 1.5 }],
+                  zIndex: 1500,
+                }
+              : {};
+
+          return (
+            <TileButton
+              onPress={() => setSelected(a.name)}
+              key={a.name}
+              style={{
+                width: tileSize,
+                height: tileSize,
+                ...highlightStyle,
+              }}
+            >
+              {a.icon}
+              {/*<Text size={tileSize * 0.7} style={{ color: theme.bg2 }}>*/}
+              {/*{completedAchievements.indexOf(a.name) >= 0 ? a.icon : "?"}*/}
+              {/*</Text>*/}
+            </TileButton>
+          );
+        })}
       </View>
     </Modal>
   );

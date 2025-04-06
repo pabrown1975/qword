@@ -1,42 +1,75 @@
 import { levelParams } from "./levels";
+import DonutIcon from "../../assets/images/donut.svg";
+import CupcakeIcon from "../../assets/images/cupcacke.svg";
+import MountainIcon from "../../assets/images/mountain.svg";
+import Bill100 from "../../assets/images/100bill.svg";
+import Bill200 from "../../assets/images/200bill.svg";
+import SkullIcon from "../../assets/images/skull.svg";
+import ChecklistIcon from "../../assets/images/checklist.svg";
+import ClimberIcon from "../../assets/images/climber.svg";
+import TrainIcon from "../../assets/images/train.svg";
+import RobotIcon from "../../assets/images/robot.svg";
+import WizardIcon from "../../assets/images/wizard.svg";
+import KingIcon from "../../assets/images/king.svg";
+import PirateIcon from "../../assets/images/pirate.svg";
+import StarIcon from "../../assets/images/star.svg";
+import SmileyIcon from "../../assets/images/smiley.svg";
+import ThreeStarsIcon from "../../assets/images/3stars.svg";
+import GeneralIcon from "../../assets/images/general.svg";
+import ReviewIcon from "../../assets/images/review.svg";
+import NightSkyIcon from "../../assets/images/nightsky.svg";
+
 
 // Function f({word, rack, best, level}) returns number of rounds that match
 export const roundAchievements = [
-  { icon: "🍩", name: "12-letter word", desc: "A dirty dozen", f: ({ word }) => word?.word?.length === 12 },
   {
-    icon: "🧁",
+    icon: <DonutIcon />,
+    name: "12-letter word",
+    desc: "A dirty dozen",
+    f: ({ word }) => word?.word?.length === 12,
+    sortOrder: 9,
+  },
+  {
+    icon: <CupcakeIcon />,
     name: "13-letter word",
     desc: "A baker's dozen",
     rarity: "rare",
     f: ({ word }) => word?.word?.length === 13,
+    sortOrder: 10,
   },
   {
-    icon: "🏔",
+    icon: <MountainIcon />,
     name: "14-letter word",
     desc: "Climb a mighty 14'er",
     rarity: "very rare",
     f: ({ word }) => word?.word?.length === 14,
+    sortOrder: 11,
   },
-  { icon: "💯", name: "100 pointer", desc: "Welcome to the century club", f: ({ word }) => word?.score >= 100 },
   {
-    icon: "✌️",
+    icon: <Bill100 />,
+    name: "100 pointer",
+    desc: "Welcome to the century club",
+    f: ({ word }) => word?.score >= 100,
+    sortOrder: 12,
+  },
+  {
+    icon: <Bill200 />,
     name: "200 pointer",
     desc: "Now that's a really big word",
     rarity: "very rare",
     f: ({ word }) => word?.score >= 200,
+    sortOrder: 13,
   },
   {
-    icon: "☠️",
+    icon: <SkullIcon />,
     name: "Impossible rack",
     desc: "Get a rack that doesn't make any words",
     rarity: "ultra rare",
     f: ({ best }) => !best,
+    sortOrder: 21,
   },
   ...levelParams.map((lp) => ({
-    icon: "🤯",
-    name: `Bingo-${lp.tiles}!`,
-    desc: `Use all ${lp.tiles} letters in a rack on the ${lp.name} level`,
-    rarity: lp.tiles > 9 ? "very rare" : null,
+    ...lp.bingo,
     f: ({ word, rack, level }) => word?.word?.length === rack.length && level === lp.name,
     bonus: 50,
   })),
@@ -45,77 +78,106 @@ export const roundAchievements = [
 // Function f({words, racks, bests, level, score}) returns true/false
 export const gameAchievements = [
   {
-    icon: "✅",
+    icon: <ChecklistIcon />,
     name: "Full board",
     desc: "No rounds skipped",
     f: ({ words }) => !words.filter((w) => !w).length,
     bonus: 100,
+    sortOrder: 1,
   },
-  { icon: "🧗", name: "400 points", desc: "Getting the hang of it", f: ({ score }) => score >= 400 },
-  { icon: "🚂", name: "500 points", desc: "Clearly on the right track now", f: ({ score }) => score >= 500 },
-  { icon: "🤖", name: "600 points", desc: "You are a scoring machine", f: ({ score }) => score >= 600 },
   {
-    icon: "🧙",
+    icon: <ClimberIcon />,
+    name: "400 points",
+    desc: "Getting the hang of it",
+    f: ({ score }) => score >= 400,
+    sortOrder: 14,
+  },
+  {
+    icon: <TrainIcon />,
+    name: "500 points",
+    desc: "Clearly on the right track now",
+    f: ({ score }) => score >= 500,
+    sortOrder: 15,
+  },
+  {
+    icon: <RobotIcon />,
+    name: "600 points",
+    desc: "You are a scoring machine",
+    f: ({ score }) => score >= 600,
+    sortOrder: 16,
+  },
+  {
+    icon: <WizardIcon />,
     name: "700 points",
     desc: 'Word wizard (you sure cast a lot of "spells" ha ha)',
     f: ({ score }) => score >= 700,
     rarity: "rare",
+    sortOrder: 17,
   },
   {
-    icon: "👑",
+    icon: <KingIcon />,
     name: "800 points",
     desc: "King of qword (if there was an orthography hall of fame, you would be in it)",
     rarity: "very rare",
     f: ({ score }) => score >= 800,
+    sortOrder: 18,
   },
   {
-    icon: "🏴‍☠️",
+    icon: <PirateIcon />,
     name: "1000 points",
     desc: "Inconceivable! (I do not think that word means what you think it means)",
     rarity: "ultra rare",
     f: ({ score }) => score >= 1000,
+    sortOrder: 19,
   },
   {
-    icon: "⭐️",
+    icon: <StarIcon />,
     name: "Best word",
     desc: "Play the best word in a round",
     f: ({ words }) => words.filter((w) => w?.isBest).length >= 1,
+    sortOrder: 3,
   },
   {
-    icon: "🤩",
+    icon: <SmileyIcon />,
     name: "Two stars",
     desc: "Nailed it, twice",
     f: ({ words }) => words.filter((w) => w?.isBest).length === 2,
+    sortOrder: 4,
   },
   {
-    icon: "✨",
+    icon: <ThreeStarsIcon />,
     name: "Three stars",
     desc: "Nailed it, thrice",
     f: ({ words }) => words.filter((w) => w?.isBest).length === 3,
+    sortOrder: 5,
   },
   {
-    icon: "🎖️",
+    icon: <GeneralIcon />,
     name: "Four stars",
     desc: "You're like a 4-star general, but with words",
     rarity: "rare",
     f: ({ words }) => words.filter((w) => w?.isBest).length === 4,
+    sortOrder: 6,
   },
   {
-    icon: "🌃",
+    icon: <ReviewIcon />,
     name: "Five stars",
     desc: "This game rates YOU five stars",
     rarity: "rare",
     f: ({ words }) => words.filter((w) => w?.isBest).length === 5,
+    sortOrder: 7,
   },
   {
-    icon: "🌌",
+    icon: <NightSkyIcon />,
     name: "Six stars",
     desc: "Your spelling prowess lights up the night sky with stars",
     rarity: "very rare",
     f: ({ words }) => words.filter((w) => w?.isBest).length === 6,
+    sortOrder: 8,
   },
-  ...levelParams.map((lp) => ({
+  ...levelParams.map((lp, i) => ({
     ...lp.perfect,
     f: ({ words, racks, level }) => level === lp.name && words.filter((w) => w?.isBest).length === racks.length,
+    sortOrder: 20 + i / 10,
   })),
 ];

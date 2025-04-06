@@ -1,4 +1,11 @@
 import { wordScore } from "./wordscore";
+import Bingo1Icon from "../../assets/images/bingo1.svg";
+import Bingo2Icon from "../../assets/images/bingo2.svg";
+import Bingo3Icon from "../../assets/images/bingo3.svg";
+import FireworksIcon from "../../assets/images/fireworks.svg";
+import GraduateIcon from "../../assets/images/graduate.svg";
+import UnicornIcon from "../../assets/images/unicorn.svg";
+
 
 export const levelParams = [
   {
@@ -17,8 +24,14 @@ export const levelParams = [
       { name: "30 pointer", f: (w) => wordScore(w) >= 30 },
       { name: "40 pointer", f: (w) => wordScore(w) >= 40 },
     ],
+    bingo: {
+      icon: <Bingo1Icon />,
+      name: "Bingo (bronze)",
+      desc: "Use all 9 letters in a rack on the beginner level",
+      sortOrder: 2.1,
+    },
     perfect: {
-      icon: "🎇",
+      icon: <FireworksIcon />,
       name: "Seven stars",
       desc: "A perfect board on the Beginner level",
       rarity: "ultra rare",
@@ -40,8 +53,15 @@ export const levelParams = [
       { name: "45 pointer", f: (w) => wordScore(w) >= 45 },
       { name: "55 pointer", f: (w) => wordScore(w) >= 55 },
     ],
+    bingo: {
+      icon: <Bingo2Icon />,
+      name: "Bingo (silver)",
+      desc: "Use all 12 letters in a rack on the intermediate level",
+      rarity: "very rare",
+      sortOrder: 2.2,
+    },
     perfect: {
-      icon: "🧑‍🎓",
+      icon: <GraduateIcon />,
       name: "Mastery",
       desc: "A perfect board on the Intermediate level",
       rarity: "ultra rare",
@@ -62,8 +82,15 @@ export const levelParams = [
       { name: "75 pointer", f: (w) => wordScore(w) >= 75 },
       { name: "90 pointer", f: (w) => wordScore(w) >= 90 },
     ],
+    bingo: {
+      icon: <Bingo3Icon />,
+      name: "Bingo (gold)",
+      desc: "Use all 15 letters in a rack on the expert level",
+      rarity: "very rare",
+      sortOrder: 2.3,
+    },
     perfect: {
-      icon: "🦄",
+      icon: <UnicornIcon />,
       name: "Perfection",
       desc: "Congratulations! This is the ultimate achievement. Thank you for playing qword.",
       rarity: "ultra rare",

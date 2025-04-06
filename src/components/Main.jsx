@@ -19,6 +19,10 @@ import GameOver from "../components/GameOver";
 import HelpModal from "./HelpModal";
 import YesterdayModal from "./YesterdayModal";
 import SettingsModal from "./SettingsModal";
+import TileButton from "./TileButton";
+import SettingsIcon from "../../assets/images/settings.svg";
+import CalenderIcon from "../../assets/images/calender.svg";
+import AchievementsModal from "./AchievementsModal";
 
 const Main = ({}) => {
   const [loading, setLoading] = useState(true);
@@ -701,16 +705,24 @@ const Main = ({}) => {
                   gap: 3,
                 }}
               >
-                <View>
+                <View style={forceWidth(screenArea.viewWidth - 134)}>
                   <Text>
                     Round {round + 1} of {levelData.slotFuncs.length}
                   </Text>
                   <Text>{msg}</Text>
                 </View>
                 <View style={{ flexDirection: "row", gap: 6 }}>
-                  <Tile letter="❓" size={35} noscore onPress={() => setHelpModalVisible(true)} />
-                  <Tile letter="📆" size={35} noscore onPress={() => setYesterdayModalVisible(true)} />
-                  <Tile letter="⚙️" size={35} noscore onPress={() => setSettingsModalVisible(true)} />
+                  <TileButton onPress={() => setHelpModalVisible(true)}>
+                    <Text style={{ width: 32, height: 32, textAlign: "center", textAlignVertical: "center" }}>
+                      {"❓"}
+                    </Text>
+                  </TileButton>
+                  <TileButton onPress={() => setYesterdayModalVisible(true)}>
+                    <CalenderIcon width={32} height={32} />
+                  </TileButton>
+                  <TileButton onPress={() => setSettingsModalVisible(true)}>
+                    <SettingsIcon width={32} height={32} />
+                  </TileButton>
                 </View>
               </View>
             </View>

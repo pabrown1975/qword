@@ -6,7 +6,7 @@ const Win = ({ icon, name, desc, rarity, bonus, style = {}, count = 1 }) => (
   <View style={{ marginVertical: 6, ...style }}>
     <Text style={{ textAlign: "center" }}>
       <H3>
-        {icon.repeat(count)} {name}
+        {icon} {name}
         {count > 1 && ` x${count}`}
       </H3>
       {!!bonus && <Text style={{ color: theme.accent1 }}> (+{bonus} pts)</Text>}

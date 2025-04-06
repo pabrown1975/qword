@@ -118,7 +118,7 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
           }}
         >
           <Button onPress={() => setShowNewGameModal(true)} text="New game" />
-          <Button onPress={() => setShowAchievementsModal(true)} text="View achievements" />
+          <Button onPress={() => setShowAchievementsModal(true)} text="Trophy case 🏆" />
         </View>
       </View>
       <NewGameModal

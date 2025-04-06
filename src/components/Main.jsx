@@ -20,7 +20,6 @@ import HelpModal from "./HelpModal";
 import YesterdayModal from "./YesterdayModal";
 import SettingsModal from "./SettingsModal";
 
-
 const Main = ({}) => {
   const [loading, setLoading] = useState(true);
   const [gameSeed, setGameSeed] = useState("");
@@ -189,6 +188,7 @@ const Main = ({}) => {
 
   const handlePlayedTileDragStart = (index) => {
     setDragInfo({
+      active: true,
       fromPlayed: true,
       toPlayed: true,
       fromIndex: index,
@@ -198,6 +198,7 @@ const Main = ({}) => {
 
   const handleAvailableTileDragStart = (index) => {
     setDragInfo({
+      active: true,
       fromPlayed: false,
       toPlayed: false,
       fromIndex: index,
@@ -207,6 +208,11 @@ const Main = ({}) => {
 
   const handleTileDrag = (event) => {
     setDragInfo((prev) => {
+      // RNGH sometimes gets gestures out of order
+      if (!prev.active) {
+        return {};
+      }
+
       const toPlayed = event.absoluteY < layoutInfo["availTileArea"].y - 20;
       const { fromPlayed } = prev;
       let toIndex;
@@ -259,9 +265,10 @@ const Main = ({}) => {
           if (event.absoluteX <= layoutInfo["avail tile 0"].x) {
             toCol = 0;
           } else {
-            toCol = availableLetters
-              .slice(0, 5)
-              .findLastIndex((_, i) => layoutInfo[`avail tile ${i}`].x + tileSizeAvail < event.absoluteX) + 1;
+            toCol =
+              availableLetters
+                .slice(0, 5)
+                .findLastIndex((_, i) => layoutInfo[`avail tile ${i}`].x + tileSizeAvail < event.absoluteX) + 1;
           }
         }
 
@@ -277,23 +284,28 @@ const Main = ({}) => {
   };
 
   const handleTileDragEnd = () => {
-    if (dragInfo.fromPlayed) {
-      if (dragInfo.toPlayed) {
-        setPlayedLetters((oldLetters) => moveArrayElement([...oldLetters], dragInfo.fromIndex, dragInfo.toIndex ?? 15));
-      } else {
-        moveTile(playedLetters, dragInfo.fromIndex, dragInfo.toIndex, setPlayedLetters, setAvailableLetters);
+    setDragInfo((prev) => {
+      // RNGH sometimes gets gestures out of order
+      if (!prev.active) {
+        return {};
       }
-    } else {
-      if (dragInfo.toPlayed) {
-        moveTile(availableLetters, dragInfo.fromIndex, dragInfo.toIndex, setAvailableLetters, setPlayedLetters);
-      } else {
-        setAvailableLetters((oldLetters) =>
-          moveArrayElement([...oldLetters], dragInfo.fromIndex, dragInfo.toIndex ?? 15)
-        );
-      }
-    }
 
-    setDragInfo({});
+      if (prev.fromPlayed) {
+        if (prev.toPlayed) {
+          setPlayedLetters((oldLetters) => moveArrayElement([...oldLetters], prev.fromIndex, prev.toIndex ?? 15));
+        } else {
+          moveTile(playedLetters, prev.fromIndex, prev.toIndex, setPlayedLetters, setAvailableLetters);
+        }
+      } else {
+        if (prev.toPlayed) {
+          moveTile(availableLetters, prev.fromIndex, prev.toIndex, setAvailableLetters, setPlayedLetters);
+        } else {
+          setAvailableLetters((oldLetters) => moveArrayElement([...oldLetters], prev.fromIndex, prev.toIndex ?? 15));
+        }
+      }
+
+      return {};
+    });
   };
 
   const updateLayoutPos = (elementName, element) =>
@@ -545,7 +557,7 @@ const Main = ({}) => {
                       const key = `played tile ${i}`;
                       let xShift = {};
 
-                      if (dragInfo.toPlayed) {
+                      if (dragInfo.active && dragInfo.toPlayed) {
                         if (dragInfo.fromPlayed) {
                           if (i >= dragInfo.toIndex && i < dragInfo.fromIndex) {
                             xShift = { transform: [{ translateX: tileSizePlayed }] };
@@ -614,9 +626,7 @@ const Main = ({}) => {
                     const key = `avail tile ${i}`;
                     let xyShift = {};
 
-                    // the "=== false" is needed because the case where the user is dragging means that both
-                    // toPlayed and fromPlayed are "=== undefined"
-                    if (dragInfo.toPlayed === false) {
+                    if (dragInfo.active && !dragInfo.toPlayed) {
                       const shiftRight = {
                         transform: [
                           { translateX: (i % 5 === 4 ? -4 : 1) * (tileSizeAvail + 1) },
@@ -635,7 +645,7 @@ const Main = ({}) => {
                         if (i >= dragInfo.toIndex) {
                           xyShift = shiftRight;
                         }
-                      } else if (dragInfo.fromPlayed === false) {
+                      } else {
                         if (i >= dragInfo.toIndex && i < dragInfo.fromIndex) {
                           xyShift = shiftRight;
                         } else if (i > dragInfo.fromIndex && i <= dragInfo.toIndex) {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { letterPoints } from "../utils/constants";
 import { styles, theme } from "../utils/style";
 import Text from "./Text";
@@ -16,16 +16,29 @@ const Tile = ({ letter, onPress, onDragStart, onDrag, onDragEnd, size, noscore, 
 
   const pan = Gesture.Pan()
     .onStart((event) => {
-      setDragInfo({ ...event });
+      // this is an awful solution but nothing else seems to work
+      // RNGH has no way to disable multiple pan gestures happening simultaneously
+      if (window.activeDragGestureHandler != null) {
+        return;
+      }
+
+      window.activeDragGestureHandler = event.handlerTag;
       onDragStart?.(centered(event));
+      setDragInfo({ ...event });
     })
     .onUpdate((event) => {
-      onDrag?.(centered(event));
-      setDragInfo(event);
+      if (window.activeDragGestureHandler === event.handlerTag) {
+        onDrag?.(centered(event));
+        setDragInfo(event);
+      }
     })
     .onEnd((event) => {
-      onDragEnd?.(centered(event));
-      setDragInfo(null);
+      if (window.activeDragGestureHandler === event.handlerTag) {
+        onDragEnd?.(centered(event));
+        setDragInfo(null);
+      }
+
+      window.activeDragGestureHandler = null;
     })
     .runOnJS(true);
 
@@ -47,7 +60,7 @@ const Tile = ({ letter, onPress, onDragStart, onDrag, onDragEnd, size, noscore, 
     : {};
 
   return (
-    <GestureDetector gesture={combined}>
+    <GestureDetector gesture={combined} enabled={false}>
       <View
         style={{
           ...styles.tile,

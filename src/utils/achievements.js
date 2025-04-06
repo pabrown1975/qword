@@ -64,7 +64,7 @@ export const gameAchievements = [
   {
     icon: "👑",
     name: "800 points",
-    desc: "If there was an orthography hall of fame, you would be in it",
+    desc: "King of qword (if there was an orthography hall of fame, you would be in it)",
     rarity: "very rare",
     f: ({ score }) => score >= 800,
   },

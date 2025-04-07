@@ -23,16 +23,13 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
     word: words[i],
     best: bests[i],
   }));
-
   const roundWins = roundAchievements
     .map((ra) => ({
       ...ra,
       count: roundInfo.filter((ri) => ra.f({ ...ri, level })).length,
     }))
     .filter((ra) => ra.count);
-
   const gameWins = gameAchievements.filter((ga) => ga.f({ words, racks, bests, level, score, roundWins }));
-
   const wins = [...roundWins, ...gameWins];
 
   wins.sort((a, b) => a.sortOrder - b.sortOrder);
@@ -98,7 +95,7 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
           }}
         >
           {wins.map((gw) => (
-            <Win {...gw} key={gw.name} />
+            <Win achievement={gw} key={gw.name} />
           ))}
         </ScrollView>
       )}

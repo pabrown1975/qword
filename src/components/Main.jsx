@@ -22,7 +22,6 @@ import SettingsModal from "./SettingsModal";
 import TileButton from "./TileButton";
 import SettingsIcon from "../../assets/images/settings.svg";
 import CalenderIcon from "../../assets/images/calender.svg";
-import AchievementsModal from "./AchievementsModal";
 
 const Main = ({}) => {
   const [loading, setLoading] = useState(true);
@@ -334,91 +333,6 @@ const Main = ({}) => {
             0
           )
       : 0);
-
-  /*
-    from avail, to played
-
-     -2  -1   0   1   2
-              |      (l before insert)
-             [0]        l = 0
-           [0] [1]      l = 1
-         [0] [1] [2]    l = 2
-       [0] [1] [2] [3]  l - 3
-
-    l | t | x
-    ---------
-    0   X   s * -1/2
-    1   0   s * -1
-    1   1   s * 0
-    2   0   s * -3/2
-    2   1   s * -1/2
-    2   2   s * +1/2
-    3   0   s * -2
-    3   1   s * -1
-    3   2   s * 0
-    3   3   s * 1
-
-
-    from played, to played
-
-     -2  -1   0   1   2
-              |      (l before insert)
-             [0]        l = 1
-           [0] [1]      l = 2
-         [0] [1] [2]    l = 3
-
-    l | t | x
-    ---------
-    0   X   X
-    1   X   s * -1/2
-    2   0   s * -1
-    2   1   s * 0
-    3   0   s * -3/2
-    3   1   s * -1/2
-    3   2   s * 1/2
-
-    ----------- area.y
-   |   -------  area.y + (area.h - s) / 2
-   |  |       |
-   |  |   * --- area.y + area.h / 2
-   |  |       |
-   |   -------
-    ----------- area.y + area.h
-
-
-    from played, to avail
-
-    ----------- area.y
-   |
-   |   -------
-   |  |       |
-   |  |       |
-   |  |       |
-   |   -------
-   |
-   |   -------
-   |  |       |
-   |  |       |
-   |  |       |
-   |   -------
-   |          --- area.y + area.h * row / numRows
-   |   -------  area.y + area.h * (row + 1/2) / numRows - s / 2
-   |  |       |
-   |  |   * --- area.y + area.h * (row + 1/2) / numRows
-   |  |       |
-   |   -------
-   |
-    ----------- area.y + area.h
-
-                              sw / 2 + area.w * (col - 2) / 5 - s / 2
-                    sw / 2    | sw / 2 + area.w * (col - 2) / 5
-    ----------------|---------|-|----
-   |   ---   ---   ---   ---   ---   |
-   |  |   | |   | |   | |   | |   |  |
-   |   ---   ---   ---   ---   ---   |
-    ---------------------------------
-
-   */
 
   let ghostTileStyle = {
     display: "none",

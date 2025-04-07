@@ -13,11 +13,13 @@ const AchievementsModal = ({ visible, setVisible, achievementList, completedAchi
   const selectedAchievement = selected && achievementList.find((a) => a.name === selected);
   const selectedInfo = selectedAchievement ? (
     completedAchievements.indexOf(selectedAchievement.name) >= 0 ? (
-      <Win {...selectedAchievement} />
+      <Win achievement={selectedAchievement} />
     ) : (
       <>
-        <Text>???</Text>
-        {!!selectedAchievement.rarity && <Text style={{ color: theme.accent2 }}>({selectedAchievement.rarity})</Text>}
+        <Text>
+          ???
+          {!!selectedAchievement.rarity && <Text style={{ color: theme.accent2 }}> ({selectedAchievement.rarity})</Text>}
+        </Text>
       </>
     )
   ) : null;
@@ -62,13 +64,11 @@ const AchievementsModal = ({ visible, setVisible, achievementList, completedAchi
               style={{
                 width: tileSize,
                 height: tileSize,
+                backgroundColor: a.bg,
                 ...highlightStyle,
               }}
             >
-              {a.icon}
-              {/*<Text size={tileSize * 0.7} style={{ color: theme.bg2 }}>*/}
-              {/*{completedAchievements.indexOf(a.name) >= 0 ? a.icon : "?"}*/}
-              {/*</Text>*/}
+              {completedAchievements.indexOf(a.name) >= 0 ? a.icon : "?"}
             </TileButton>
           );
         })}

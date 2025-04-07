@@ -1,7 +1,7 @@
 import { TouchableOpacity } from "react-native";
 import { styles } from "../utils/style";
 
-const TileButton = ({ children, style, ...props }) => {
+const TileButton = ({ children, style = {}, ...props }) => {
   return (
     <TouchableOpacity
       style={{

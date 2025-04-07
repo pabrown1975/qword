@@ -1,19 +1,28 @@
 import { View } from "react-native";
 import Text, { H3 } from "./Text";
-import { theme } from "../utils/style";
+import { styles, theme } from "../utils/style";
 
-const Win = ({ icon, name, desc, rarity, bonus, style = {}, count = 1 }) => (
-  <View style={{ marginVertical: 6, ...style }}>
-    <Text style={{ textAlign: "center" }}>
-      <H3>
-        {icon} {name}
-        {count > 1 && ` x${count}`}
-      </H3>
-      {!!bonus && <Text style={{ color: theme.accent1 }}> (+{bonus} pts)</Text>}
-      {!!rarity && <Text style={{ color: theme.accent2 }}> ({rarity})</Text>}
-    </Text>
-    <Text style={{ color: theme.fg2, textAlign: "center" }}>{desc}</Text>
-  </View>
-);
+const Win = ({ achievement, style = {} }) => {
+  const background = achievement.bg ? { backgroundColor: achievement.bg } : {};
+
+  return (
+    <View style={{ marginVertical: 6, ...style }}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ ...styles.tile, ...background, width: 52, height: 52 }}>{achievement.icon}</View>
+        <View style={{ marginLeft: 6, maxWidth: "85%" }}>
+          <Text>
+            <H3>
+              {achievement.name}
+              {achievement.count > 1 && ` x${achievement.count}`}
+            </H3>
+            {!!achievement.bonus && <Text style={{ color: theme.accent1 }}> (+{achievement.bonus} pts)</Text>}
+            {!!achievement.rarity && <Text style={{ color: theme.accent2 }}> ({achievement.rarity})</Text>}
+          </Text>
+          <Text style={{ color: theme.fg2 }}>{achievement.desc}</Text>
+        </View>
+      </View>
+    </View>
+  );
+};
 
 export default Win;

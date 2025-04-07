@@ -6,7 +6,6 @@ import FireworksIcon from "../../assets/images/fireworks.svg";
 import GraduateIcon from "../../assets/images/graduate.svg";
 import UnicornIcon from "../../assets/images/unicorn.svg";
 
-
 export const levelParams = [
   {
     name: "Beginner",
@@ -26,14 +25,16 @@ export const levelParams = [
     ],
     bingo: {
       icon: <Bingo1Icon />,
+      bg: "#975",
       name: "Bingo (bronze)",
       desc: "Use all 9 letters in a rack on the beginner level",
       sortOrder: 2.1,
     },
     perfect: {
       icon: <FireworksIcon />,
+      bg: "#113",
       name: "Seven stars",
-      desc: "A perfect board on the Beginner level",
+      desc: "A perfect board on the beginner level",
       rarity: "ultra rare",
     },
   },
@@ -56,14 +57,16 @@ export const levelParams = [
     bingo: {
       icon: <Bingo2Icon />,
       name: "Bingo (silver)",
+      bg: "#bbc",
       desc: "Use all 12 letters in a rack on the intermediate level",
       rarity: "very rare",
       sortOrder: 2.2,
     },
     perfect: {
       icon: <GraduateIcon />,
+      bg: "#e81",
       name: "Mastery",
-      desc: "A perfect board on the Intermediate level",
+      desc: "A perfect board on the intermediate level",
       rarity: "ultra rare",
     },
   },
@@ -84,6 +87,7 @@ export const levelParams = [
     ],
     bingo: {
       icon: <Bingo3Icon />,
+      bg: "#ec5",
       name: "Bingo (gold)",
       desc: "Use all 15 letters in a rack on the expert level",
       rarity: "very rare",
@@ -91,6 +95,7 @@ export const levelParams = [
     },
     perfect: {
       icon: <UnicornIcon />,
+      bg: "#f0c",
       name: "Perfection",
       desc: "Congratulations! This is the ultimate achievement. Thank you for playing qword.",
       rarity: "ultra rare",

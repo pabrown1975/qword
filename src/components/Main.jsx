@@ -40,6 +40,7 @@ const Main = ({}) => {
   const [settingsModalVisible, setSettingsModalVisible] = useState(false);
   const [layoutInfo, setLayoutInfo] = useState({});
   const [dragInfo, setDragInfo] = useState({});
+  const [yesterdayInfo, setYesterdayInfo] = useState({});
 
   const screenArea = useScreenArea();
 
@@ -114,7 +115,28 @@ const Main = ({}) => {
 
     AsyncStorage.getItem("selectedLevel")
       .then((value) => {
-        const { seed, racks, bestWords, bestScores, data } = buildRacks(mode, value ?? levelParams[0].name, new Date());
+        const d = new Date();
+
+        // Generate racks for current game
+        const { seed, racks, bestWords, bestScores, data } = buildRacks(mode, value ?? levelParams[0].name, d);
+
+        // Generate all racks for yesterday's games
+        d.setDate(d.getDate() - 1);
+
+        setYesterdayInfo((prev) => {
+          if (prev.date === d.toDateString()) {
+            // Already generated
+            return prev;
+          }
+
+          return {
+            date: d.toDateString(),
+            racks: levelParams.map((lp) => ({
+              ...lp,
+              ...buildRacks("Daily", lp.name, d),
+            })),
+          };
+        });
 
         newRack(racks[0]);
 
@@ -169,8 +191,9 @@ const Main = ({}) => {
   const titleAreaHeight = 80;
   const slotAreaHeight = (levelData.slotFuncs.length + 1) * slotHeight + levelData.slotFuncs.length * 3;
   const bottomAreaHeight = screenArea.viewHeight - (titleAreaHeight + slotAreaHeight);
-  const messageAreaHeight = 100;
   const playedWordAreaHeight = 120;
+  const helpButtonsSize = 40;
+  const messageAreaHeight = helpButtonsSize + 12;
   const tileAreaHeight = bottomAreaHeight - (playedWordAreaHeight + messageAreaHeight);
 
   const tileSizeAvail = Math.min((tileAreaHeight - 20) / 3, (screenArea.viewWidth - 20) / 5, 60);
@@ -435,7 +458,7 @@ const Main = ({}) => {
         style={{
           width: "100%",
           ...forceHeight(bottomAreaHeight),
-          justifyContent: "flex-end",
+          justifyContent: "center",
           alignItems: "center",
         }}
       >
@@ -517,9 +540,9 @@ const Main = ({}) => {
               style={{
                 width: "100%",
                 ...forceHeight(tileAreaHeight),
-                justifyContent: "flex-end",
+                justifyContent: "center",
                 alignItems: "center",
-                paddingBottom: 6,
+                gap: 12,
               }}
             >
               <View
@@ -588,15 +611,6 @@ const Main = ({}) => {
                   })}
                 </View>
               </View>
-            </View>
-            <View
-              style={{
-                ...forceHeight(messageAreaHeight),
-                justifyContent: "space-evenly",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
               <View
                 style={{
                   ...forceWidth(availableLettersRackWidth),
@@ -610,6 +624,15 @@ const Main = ({}) => {
                 {availableLetters.length > 1 && <Button text="shuffle" onPress={shuffleAvailableLetters} />}
                 {!!playedLetters.length && <Button text="clear" onPress={clearPlayedLetters} />}
               </View>
+            </View>
+            <View
+              style={{
+                ...forceHeight(messageAreaHeight),
+                justifyContent: "space-evenly",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
               <View
                 style={{
                   ...forceWidth(screenArea.viewWidth),
@@ -619,7 +642,7 @@ const Main = ({}) => {
                   gap: 3,
                 }}
               >
-                <View style={forceWidth(screenArea.viewWidth - 134)}>
+                <View style={forceWidth(screenArea.viewWidth - ((helpButtonsSize + 6) * 3 + 10))}>
                   <Text>
                     Round {round + 1} of {levelData.slotFuncs.length}
                   </Text>
@@ -627,15 +650,23 @@ const Main = ({}) => {
                 </View>
                 <View style={{ flexDirection: "row", gap: 6 }}>
                   <TileButton onPress={() => setHelpModalVisible(true)}>
-                    <Text style={{ width: 32, height: 32, textAlign: "center", textAlignVertical: "center" }}>
+                    <Text
+                      size={helpButtonsSize * 0.5}
+                      style={{
+                        width: helpButtonsSize,
+                        height: helpButtonsSize,
+                        textAlign: "center",
+                        textAlignVertical: "center",
+                      }}
+                    >
                       {"❓"}
                     </Text>
                   </TileButton>
                   <TileButton onPress={() => setYesterdayModalVisible(true)}>
-                    <CalenderIcon width={32} height={32} />
+                    <CalenderIcon width={helpButtonsSize} height={helpButtonsSize} />
                   </TileButton>
                   <TileButton onPress={() => setSettingsModalVisible(true)}>
-                    <SettingsIcon width={32} height={32} />
+                    <SettingsIcon width={helpButtonsSize} height={helpButtonsSize} />
                   </TileButton>
                 </View>
               </View>
@@ -644,7 +675,7 @@ const Main = ({}) => {
         )}
       </View>
       <HelpModal visible={helpModalVisible} setVisible={setHelpModalVisible} />
-      <YesterdayModal visible={yesterdayModalVisible} setVisible={setYesterdayModalVisible} />
+      <YesterdayModal visible={yesterdayModalVisible} setVisible={setYesterdayModalVisible} data={yesterdayInfo.racks} />
       <SettingsModal
         visible={settingsModalVisible}
         setVisible={setSettingsModalVisible}

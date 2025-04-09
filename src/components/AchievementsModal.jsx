@@ -18,7 +18,9 @@ const AchievementsModal = ({ visible, setVisible, achievementList, completedAchi
       <>
         <Text>
           ???
-          {!!selectedAchievement.rarity && <Text style={{ color: theme.accent2 }}> ({selectedAchievement.rarity})</Text>}
+          {!!selectedAchievement.rarity && (
+            <Text style={{ color: theme.accent2 }}> ({selectedAchievement.rarity})</Text>
+          )}
         </Text>
       </>
     )
@@ -56,6 +58,7 @@ const AchievementsModal = ({ visible, setVisible, achievementList, completedAchi
                   zIndex: 1500,
                 }
               : {};
+          const show = completedAchievements.indexOf(a.name) >= 0;
 
           return (
             <TileButton
@@ -64,11 +67,22 @@ const AchievementsModal = ({ visible, setVisible, achievementList, completedAchi
               style={{
                 width: tileSize,
                 height: tileSize,
-                backgroundColor: a.bg,
+                backgroundColor: show ? a.bg : theme.bg1,
                 ...highlightStyle,
               }}
             >
-              {completedAchievements.indexOf(a.name) >= 0 ? a.icon : "?"}
+              {show ? (
+                a.icon
+              ) : (
+                <Text
+                  size={tileSize * 0.5}
+                  style={{
+                    color: theme.bg2,
+                  }}
+                >
+                  ?
+                </Text>
+              )}
             </TileButton>
           );
         })}

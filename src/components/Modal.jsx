@@ -15,7 +15,7 @@ const Modal = ({ visible, setVisible, children }) => {
         }}
       >
         {children}
-        {!!setVisible && <Button size={24} text="Close" onPress={() => setVisible(false)} />}
+        {!!setVisible && <Button size={42} text="Close" onPress={() => setVisible(false)} />}
       </View>
     </RNModal>
   );

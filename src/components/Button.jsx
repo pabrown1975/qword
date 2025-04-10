@@ -2,20 +2,20 @@ import { TouchableOpacity } from "react-native";
 import { theme } from "../utils/style";
 import Text from "./Text";
 
-const Button = ({ size = 20, text, style, onPress }) => {
+const Button = ({ size = 36, text, style, onPress }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={{
         backgroundColor: theme.bg2,
-        paddingHorizontal: size * 0.55,
-        paddingVertical: size * 0.2,
-        height: size * 1.8,
-        borderRadius: size,
+        paddingHorizontal: size * 0.3,
+        height: size,
+        borderRadius: size / 2,
+        justifyContent: "center",
         ...style,
       }}
     >
-      <Text size={size} style={{ textAlign: "center" }}>{text}</Text>
+      <Text size={size * 0.5} style={{ textAlign: "center" }}>{text}</Text>
     </TouchableOpacity>
   );
 };

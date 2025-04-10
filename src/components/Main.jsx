@@ -193,10 +193,11 @@ const Main = ({}) => {
   const bottomAreaHeight = screenArea.viewHeight - (titleAreaHeight + slotAreaHeight);
   const playedWordAreaHeight = 120;
   const helpButtonsSize = 40;
+  const rackButtonAreaHeight = 42;
   const messageAreaHeight = helpButtonsSize + 12;
   const tileAreaHeight = bottomAreaHeight - (playedWordAreaHeight + messageAreaHeight);
 
-  const tileSizeAvail = Math.min((tileAreaHeight - 20) / 3, (screenArea.viewWidth - 20) / 5, 60);
+  const tileSizeAvail = Math.min((tileAreaHeight - (rackButtonAreaHeight + 20)) / 3, (screenArea.viewWidth - 20) / 5, 60);
   const tileSizePlayed = Math.min((screenArea.viewWidth - 20) / playedLetters.length, 50);
 
   // The literals here are a best guess at layout slop (borders + padding) but might be off on some devices

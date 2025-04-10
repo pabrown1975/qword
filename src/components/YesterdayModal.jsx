@@ -15,7 +15,7 @@ const YesterdayModal = ({ visible, setVisible, data }) => {
       >
         {data.map((lp, i) => (
           <View key={`level ${i}`} style={{ ...styles.tile, ...forceWidth(viewWidth), padding: 10, alignItems: "left" }}>
-            <Text size={18} style={{ marginBottom: 6, color: theme.accent2 }}>
+            <Text size={18} style={{ marginBottom: 6, color: theme.accent1 }}>
               {lp.seed}
             </Text>
             <View style={{ textAlign: "left" }}>

@@ -88,11 +88,11 @@ const GameOver = ({ height, score, words, racks, bests, level, onNewGame }) => {
         <ScrollView
           style={{
             ...forceHeight(achievementAreaHeight),
-            marginVertical: 6,
             padding: 6,
             backgroundColor: theme.bg2,
             borderRadius: 6,
           }}
+          contentContainerStyle={{ paddingBottom: 6 }}
         >
           {wins.map((gw) => (
             <Win achievement={gw} key={gw.name} />

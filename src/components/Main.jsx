@@ -78,7 +78,7 @@ const Main = ({}) => {
       return;
     }
 
-    setRound((round) => round + 1);
+    setRound((prev) => prev + 1);
   };
 
   const handleSlotClick = (index) => {
@@ -419,7 +419,7 @@ const Main = ({}) => {
           backgroundColor: theme.ghost1,
           ...border(2, theme.ghost2),
         }}
-      ></View>
+      />
       <View
         style={{
           width: "100%",
@@ -644,10 +644,10 @@ const Main = ({}) => {
                 }}
               >
                 <View style={forceWidth(screenArea.viewWidth - ((helpButtonsSize + 6) * 3 + 10))}>
-                  <Text>
+                  <Text style={{ color: theme.fg2 }}>
                     Round {round + 1} of {levelData.slotFuncs.length}
                   </Text>
-                  <Text>{msg}</Text>
+                  <Text size={13}>{msg}</Text>
                 </View>
                 <View style={{ flexDirection: "row", gap: 6 }}>
                   <TileButton onPress={() => setHelpModalVisible(true)}>

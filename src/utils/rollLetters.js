@@ -1,9 +1,10 @@
 import { vowelTable, consonantTable } from "./constants";
-import { random, randomInt } from "./math";
+import { random, randomInt, randomIntNormalDist } from "./math";
 import { shuffleArray } from "./arrays";
-import { bestWord, wordScore } from './wordscore';
-import { levelParams } from './levels';
-import wordlist from './wordlist';
+import { wordScore } from "./wordscore";
+import { bestWord } from "./bestWord";
+import { levelParams } from "./levels";
+import wordlist from "./wordlist";
 
 const randomLetter = (fromTable, seed) => {
   const r = random(seed);
@@ -19,7 +20,7 @@ const randomLetter = (fromTable, seed) => {
 
 export const rollLetters = (numLetters, seed, round, minVowels, maxVowels) => {
   const letters = [];
-  const numVowels = randomInt(`${seed} ${round} numVowels`, minVowels, maxVowels);
+  const numVowels = randomIntNormalDist(`${seed} ${round} numVowels`, minVowels, maxVowels);
 
   for (let i = 0; i < numLetters; i++) {
     letters[i] = randomLetter(i < numVowels ? vowelTable : consonantTable, `${seed} ${round} ${i}`);
@@ -34,31 +35,64 @@ export const rollLetters = (numLetters, seed, round, minVowels, maxVowels) => {
   return letters;
 };
 
-export const buildRacks = (mode, level, date) => {
+export const buildRacks = (mode, levelName, date) => {
   const seedRoot = mode === "Daily" ? date.toDateString() : Math.floor(date.getTime() / 1000);
-  const seed = `${mode} : ${seedRoot} : ${level}`;
-  const index = levelParams.findIndex((lp) => lp.name === level)
+  const seed = `${mode} : ${seedRoot} : ${levelName}`;
+  const index = levelParams.findIndex((lp) => lp.name === levelName);
   const data = levelParams[index];
   const numRounds = data.slotFuncs.length;
   const racks = [];
   const bestScores = [];
   const bestWords = [];
-  const bingoRound = (mode === "Daily" && (date.getDay() % levelParams.length === index))
-    ? randomInt(`${seed} bingo round`, 0, numRounds - 1)
-    : -1;
+  const bingoRound =
+    mode === "Daily" && date.getDay() % levelParams.length === index
+      ? randomInt(`${seed} bingo round`, 0, numRounds - 1)
+      : -1;
+
+  const slots = new Array(numRounds).fill(false);
 
   for (let r = 0; r < numRounds; r++) {
-    let letters, best;
+    let letters,
+      best,
+      done = false,
+      attempt = 0;
 
-    if (r === bingoRound) {
-      const filtered = wordlist.filter((w) => w.length === data.tiles);
+    while (!done) {
+      if (r === bingoRound) {
+        const filtered = wordlist.filter(([w, _]) => w.length === data.tiles);
 
-      best = filtered[randomInt(`${seed} bingo word`, 1, filtered.length - 1)];
-      letters = best.split("");
-      shuffleArray(letters);
-    } else {
-      letters = rollLetters(data.tiles, seed, r, data.minVowels, data.maxVowels);
-      best = bestWord(letters, data.minimumLength);
+        best = filtered[randomInt(`${seed} bingo word`, 1, filtered.length - 1)][0];
+        letters = best.split("");
+        shuffleArray(letters);
+
+        done = true;
+      } else {
+        letters = rollLetters(
+          data.tiles,
+          `${seed} attempt ${attempt}`,
+          r,
+          data.minVowels,
+          Math.max(data.maxVowels - attempt, data.minVowels)
+        );
+
+        best = bestWord(letters, levelName);
+
+        if (!best) {
+          done = true;
+        } else {
+          for (let i = 0; i < numRounds; i++) {
+            if (!slots[i] && data.slotFuncs.find((sf) => sf.fillOrder === i).f(best)) {
+              slots[i] = true;
+              done = true;
+              break;
+            }
+          }
+        }
+      }
+
+      if (!done && ++attempt === 12) {
+        done = true;
+      }
     }
 
     racks.push(letters);

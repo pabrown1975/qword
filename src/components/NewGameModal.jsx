@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { forceWidth, styles } from '../utils/style';
+import { forceWidth, styles, theme } from "../utils/style";
 import { levelParams } from "../utils/levels";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "./Button";
@@ -14,27 +14,35 @@ const NewGameModal = ({ visible, setVisible, playerLevel, onNewGame }) => {
     <Modal visible={visible} setVisible={setVisible}>
       <View
         style={{
-          ...forceWidth(240),
+          ...forceWidth("85%"),
           ...styles.tile,
-          alignItems: "flex-start",
+          alignItems: "center",
           gap: 6,
           padding: 16,
         }}
       >
-        <Text>Today's daily qword:</Text>
+        <Text size={20}>Daily qword:</Text>
+        <Text style={{ textAlign: "center", color: theme.fg2 }}>
+          Play again to improve your score on today's puzzle
+        </Text>
         {availableLevels.map((lp) => (
           <Button
             onPress={() => handleNewGame("Daily", lp.name)}
-            style={{ width: "100%" }}
+            style={{ width: "85%" }}
             text={lp.name}
             key={`new daily ${lp.name}`}
           />
         ))}
-        <Text style={{ marginTop: 10 }}>Random qword:</Text>
+        <Text size={20} style={{ marginTop: 10 }}>
+          Random qword:
+        </Text>
+        <Text style={{ textAlign: "center", color: theme.fg2 }}>
+          Get some practice on a completely random puzzle
+        </Text>
         {availableLevels.map((lp) => (
           <Button
             onPress={() => handleNewGame("Random", lp.name)}
-            style={{ width: "100%" }}
+            style={{ width: "85%" }}
             text={lp.name}
             key={`new random ${lp.name}`}
           />
